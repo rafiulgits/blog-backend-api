@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Blogger.Data;
+using Blogger.Dto;
 
 namespace Blogger.Controllers
 {
@@ -7,18 +8,24 @@ namespace Blogger.Controllers
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult CreatePost()
+
+        private readonly BloggerContext DB;
+
+        public PostController()
         {
-            var DB = new BloggerContext();
-            var result = DB.Add(new Post()
+            DB = new BloggerContext();
+        }
+
+        [HttpPost]
+        public IActionResult CreatePost([FromBody] PostCreateDto formData)
+        {
+            if(formData.IsValid())
             {
-                Title = "Hello World",
-                Body = "This is my first blog post",
-                CreatedOn = System.DateTime.Now
-            });
-            DB.SaveChanges();
-            return Created($"{result.Entity.Id}", result.Entity);
+                var result = DB.Add(formData.GetObject());
+                DB.SaveChanges();
+                return Created($"{result.Entity.Id}", result.Entity);
+            }
+            return BadRequest("requested body is no valid");
         }
     }
 }
