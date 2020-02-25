@@ -22,6 +22,14 @@ namespace Blogger
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
+            DbOptions dbOptions = new DbOptions();
+            Configuration.GetSection(nameof(DbOptions)).Bind(dbOptions);
+            AppOptionProvider.DbOptions = dbOptions;
+
+            SwaggerOptions swaggerOptions = new SwaggerOptions();
+            Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+            AppOptionProvider.SwaggerOptions = swaggerOptions;
         }
 
         public IConfiguration Configuration { get; }
@@ -45,8 +53,7 @@ namespace Blogger
 
             app.UseHttpsRedirection();
 
-            var swaggerOptions = new SwaggerOptions();
-            Configuration.GetSection("SwaggerOptions").Bind(swaggerOptions);
+            var swaggerOptions = AppOptionProvider.SwaggerOptions;
             app.UseSwagger(op => {op.RouteTemplate = swaggerOptions.JsonRoute; });
             app.UseSwaggerUI(op => {op.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);});
 

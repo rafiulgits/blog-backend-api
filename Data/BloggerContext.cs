@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Blogger.Options;
 
 namespace Blogger.Data
 {
@@ -8,7 +9,7 @@ namespace Blogger.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer("Data Source=localhost;Initial Catalog=Blogger;Integrated Security=True");
+            options.UseSqlServer(AppOptionProvider.DbOptions.ToString());
         }
     }
 }
