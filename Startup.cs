@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Blogger.Extensions;
 using Blogger.Options;
+using Blogger.Data;
+using Blogger.Services;
 
 namespace Blogger
 {
@@ -27,6 +29,8 @@ namespace Blogger
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<BloggerContext>();
+            services.AddScoped<PostService>();
             services.AddControllers();
             services.ConfigureSwaggerPage();
         }

@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Blogger.Data;
 using Blogger.Dto;
+using Blogger.Services;
 
 namespace Blogger.Controllers
 {
@@ -9,11 +11,11 @@ namespace Blogger.Controllers
     public class PostController : ControllerBase
     {
 
-        private readonly BloggerContext DB;
+        private readonly PostService _PostService;
 
-        public PostController()
+        public PostController(PostService postService)
         {
-            DB = new BloggerContext();
+            _PostService = postService;
         }
 
         [HttpPost]
@@ -21,9 +23,8 @@ namespace Blogger.Controllers
         {
             if(formData.IsValid())
             {
-                var result = DB.Add(formData.GetObject());
-                DB.SaveChanges();
-                return Created($"{result.Entity.Id}", result.Entity);
+                var result = _PostService.PostRepo.Add(formData.GetObject());
+                return Created(result.Id.ToString(), result);
             }
             return BadRequest("requested body is no valid");
         }
