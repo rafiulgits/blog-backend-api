@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Blogger.Data
 {
@@ -14,35 +14,36 @@ namespace Blogger.Data
             Context = context;
         }
         
-        public Post Get(Guid id)
+        public async Task<Post> Get(Guid id)
         {
-            return Context.Find<Post>(id);
+            return await Context.FindAsync<Post>(id);
         }
 
-        public List<Post> GetAll()
+        public async Task<Post> Add(Post entity)
         {
-            return Context.Posts.ToList();
-        }
-
-        public Post Add(Post entity)
-        {
-            var result = Context.Add<Post>(entity);
-            Context.SaveChanges();
+            var result = await Context.AddAsync<Post>(entity);
+            await Context.SaveChangesAsync();
             return result.Entity;
         }
 
-        public Post Update(Post entity)
+        public async Task<Post> Update(Post entity)
         {
             var result =  Context.Update<Post>(entity);
+            await Context.SaveChangesAsync();
             return result.Entity;
         }
 
 
-        public Post Delete(Guid id)
+        public async Task<Post> Delete(Post post)
         {
-            var post = Get(id);
             var result = Context.Remove<Post>(post);
+            await Context.SaveChangesAsync();
             return result.Entity;
+        }
+
+        public IQueryable<Post> GetQueryableHandler()
+        {
+            return Context.Posts.AsQueryable();
         }
     }
 }

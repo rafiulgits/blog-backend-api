@@ -1,4 +1,4 @@
-namespace Blogger.Dto
+namespace Blogger.Data.Dto
 {
     public interface IRequestDto<T>
     {

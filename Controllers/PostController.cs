@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Blogger.Data;
-using Blogger.Dto;
+using Blogger.Data.Dto;
 using Blogger.Services;
 
 namespace Blogger.Controllers
@@ -19,14 +20,14 @@ namespace Blogger.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreatePost([FromBody] PostCreateDto formData)
+        public async Task<ActionResult> CreatePost([FromBody] PostDto formData)
         {
             if(formData.IsValid())
             {
-                var result = _PostService.PostRepo.Add(formData.GetObject());
+                var result = await _PostService.Create(formData.GetObject());
                 return Created(result.Id.ToString(), result);
             }
-            return BadRequest("requested body is no valid");
+            return BadRequest(formData.Errors);
         }
     }
 }
