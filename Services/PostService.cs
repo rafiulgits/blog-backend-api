@@ -18,10 +18,6 @@ namespace Blogger.Services
 
         public async Task<Post> Create(Post post)
         {
-            if(post.Id != Guid.Empty)
-            {
-                post.Id = Guid.Empty;
-            }
             return await PostRepo.Add(post);
         }
 
