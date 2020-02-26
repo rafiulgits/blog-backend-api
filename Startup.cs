@@ -51,7 +51,9 @@ namespace Blogger
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
+            app.UseCustomExceptionHandler();
+            
             var swaggerOptions = AppOptionProvider.SwaggerOptions;
             app.UseSwagger(op => {op.RouteTemplate = swaggerOptions.JsonRoute; });
             app.UseSwaggerUI(op => {op.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);});
