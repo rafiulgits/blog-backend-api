@@ -13,9 +13,7 @@ namespace Blogger.Data.Dto
 
         public bool IsValid()
         {
-            if(IsValidTitle() && IsValidBody())
-                return true;
-            return false;
+            return IsValidTitle() && IsValidBody();
         }
 
         private bool IsValidTitle()
@@ -36,11 +34,6 @@ namespace Blogger.Data.Dto
 
         private bool IsValidBody()
         {
-            if(String.IsNullOrEmpty(Body))
-            {
-                Errors = new {Body = "body shouldn't be null or empty"};
-                return false;
-            }
             if(String.IsNullOrWhiteSpace(Body))
             {
                 Errors = new {Body = "only whitespace is not allowed in body"};
@@ -49,7 +42,7 @@ namespace Blogger.Data.Dto
             return true;
         }
 
-        public Post GetObject()
+        public Post GetPersistentObject()
         {
             return new Post()
             {

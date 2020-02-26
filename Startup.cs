@@ -38,6 +38,7 @@ namespace Blogger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<BloggerContext>();
+            services.AddScoped<PostRepository>();
             services.AddScoped<PostService>();
             services.AddControllers();
             services.ConfigureSwaggerPage();
@@ -50,8 +51,6 @@ namespace Blogger
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
 
             var swaggerOptions = AppOptionProvider.SwaggerOptions;
             app.UseSwagger(op => {op.RouteTemplate = swaggerOptions.JsonRoute; });

@@ -9,13 +9,11 @@ namespace Blogger.Services
 {
     public class PostService
     {
-        public BloggerContext Context;
         public PostRepository PostRepo;
 
-        public PostService(BloggerContext bloggerContext)
+        public PostService(PostRepository postRepository)
         {
-            Context = bloggerContext;
-            PostRepo = new PostRepository(Context);
+            PostRepo = postRepository;
         }
 
         public async Task<Post> Create(Post post)

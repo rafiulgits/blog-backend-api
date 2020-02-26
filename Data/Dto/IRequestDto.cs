@@ -3,6 +3,6 @@ namespace Blogger.Data.Dto
     public interface IRequestDto<T>
     {
         bool IsValid();
-        T GetObject();
+        T GetPersistentObject();
     }
 }
