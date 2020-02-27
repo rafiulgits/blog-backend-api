@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Blogger.Data;
 using Blogger.Data.Dto;
@@ -26,7 +27,8 @@ namespace Blogger.Controllers
             if(post.IsValid())
             {
                 var result = await postService.Create(post.GetPersistentObject());
-                return Created(result.Id.ToString(), result);
+                string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
+                return Created(refUrl, result);
             }
             return BadRequest(post.Error);
         }
@@ -76,6 +78,17 @@ namespace Blogger.Controllers
             }
 
             var result = await postService.Update(post.GetPersistentObject(), post.Id);
+            if(result == null)
+            {
+                return NotFound();
+            }
+            return result;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Post>> DeletePost(Guid id)
+        {
+            var result = await postService.Delete(id);
             if(result == null)
             {
                 return NotFound();

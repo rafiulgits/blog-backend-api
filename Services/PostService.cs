@@ -42,6 +42,10 @@ namespace Blogger.Services
         public async Task<Post> Delete(Guid id)
         {
             var post = await PostRepo.Get(id);
+            if(post == null)
+            {
+                return null;
+            }
             return await PostRepo.Delete(post);
         }
 
