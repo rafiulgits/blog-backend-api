@@ -28,7 +28,7 @@ namespace Blogger.Controllers
                 var result = await postService.Create(post.GetPersistentObject());
                 return Created(result.Id.ToString(), result);
             }
-            return BadRequest(post.Errors);
+            return BadRequest(post.Error);
         }
 
         [HttpGet("{id}")]
@@ -72,7 +72,7 @@ namespace Blogger.Controllers
             }
             if(!post.IsValid())
             {
-                return BadRequest(post.Errors);
+                return BadRequest(post.Error);
             }
 
             var result = await postService.Update(post.GetPersistentObject(), post.Id);
