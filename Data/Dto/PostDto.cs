@@ -4,7 +4,7 @@ namespace Blogger.Data.Dto
 {
     public class PostDto : IRequestDto<Post>
     {
-
+        public Guid Id { set; get; }
         public string Title {set; get;}
         public string Body {set; get;}
         public DateTime CreatedOn {set; get;}

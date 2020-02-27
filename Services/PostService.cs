@@ -26,9 +26,17 @@ namespace Blogger.Services
             return await PostRepo.Get(id);
         }
 
-        public async Task<Post> Update(Post post)
+        public async Task<Post> Update(Post post, Guid id)
         {
-            return await PostRepo.Update(post);
+            Post fetchedPost = await PostRepo.Get(id);
+            if(fetchedPost == null)
+            {
+                return null;
+            }
+            fetchedPost.Title = post.Title;
+            fetchedPost.Body = post.Body;
+            fetchedPost.CreatedOn = post.CreatedOn;
+            return await PostRepo.Update(fetchedPost);
         }
 
         public async Task<Post> Delete(Guid id)

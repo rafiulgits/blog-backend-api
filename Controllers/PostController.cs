@@ -62,5 +62,25 @@ namespace Blogger.Controllers
         {
             return await postService.GetAll();
         }
+
+        [HttpPut]
+        public async Task<ActionResult<Post>> UpdatePost(PostDto post)
+        {
+            if(post.Id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+            if(!post.IsValid())
+            {
+                return BadRequest(post.Errors);
+            }
+
+            var result = await postService.Update(post.GetPersistentObject(), post.Id);
+            if(result == null)
+            {
+                return NotFound();
+            }
+            return result;
+        }
     }
 }
