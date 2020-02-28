@@ -1,5 +1,9 @@
+using Blogger.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Blogger.Extensions
 {
@@ -24,6 +28,30 @@ namespace Blogger.Extensions
                        new string[] {}
                    }
                 });
+            });
+        }
+
+        public static void AddJwtAuthentication(this IServiceCollection services)
+        {
+            var JwtOptions = AppOptionProvider.JwtOptions;
+
+            services.AddAuthentication(op =>
+            {
+                op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                op.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(op =>
+            {
+                op.SaveToken = true;
+                op.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Secret)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+                };
             });
         }
     }

@@ -4,5 +4,6 @@ namespace Blogger.Options
     {
         public static DbOptions DbOptions {set; get;}
         public static SwaggerOptions SwaggerOptions {set; get;}
+        public static JwtOptions JwtOptions {set; get;}
     }
 }
