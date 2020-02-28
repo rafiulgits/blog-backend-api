@@ -26,9 +26,17 @@ namespace Blogger.Services
             return await PostRepo.Get(id);
         }
 
-        public async Task<Post> Update(Post post)
+        public async Task<Post> Update(Post post, Guid id)
         {
-            return await PostRepo.Update(post);
+            Post fetchedPost = await PostRepo.Get(id);
+            if(fetchedPost == null)
+            {
+                return null;
+            }
+            fetchedPost.Title = post.Title;
+            fetchedPost.Body = post.Body;
+            fetchedPost.CreatedOn = post.CreatedOn;
+            return await PostRepo.Update(fetchedPost);
         }
 
         public async Task<Post> Delete(Guid id)
@@ -39,9 +47,31 @@ namespace Blogger.Services
 
         public async Task<List<Post>> GetAll()
         {
-            var handler =  PostRepo.GetQueryableHandler();
-            return await handler.AsQueryable()
-                .Where(post => true).ToListAsync();
+           return await PostRepo.GetQueryableHandler()
+                                .AsQueryable()
+                                .Where(post => true)
+                                .ToListAsync();
+        }
+
+        public async Task<List<Post>> GetPage(int page, int pageSize=10, bool descOrder=false)
+        {
+            if(page <=0)
+            {
+                page = 1;
+            }
+
+            var resource = PostRepo.GetQueryableHandler();
+            int cursorPoint = (page-1)*pageSize;
+            if(descOrder)
+            {
+                return await resource.OrderByDescending(post => post.CreatedOn)
+                                     .Skip(cursorPoint)
+                                     .Take(pageSize)
+                                     .ToListAsync();
+            }
+            return await resource.Skip(cursorPoint)
+                                 .Take(pageSize)
+                                 .ToListAsync();
         }
     }
 }

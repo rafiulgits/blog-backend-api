@@ -40,7 +40,11 @@ namespace Blogger
             services.AddSingleton<BloggerContext>();
             services.AddScoped<PostRepository>();
             services.AddScoped<PostService>();
-            services.AddControllers();
+            services.AddControllers(options => 
+            {
+                options.RespectBrowserAcceptHeader = true;
+                options.ReturnHttpNotAcceptable = true;
+            }).AddXmlSerializerFormatters();
             services.ConfigureSwaggerPage();
         }
 
