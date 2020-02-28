@@ -24,7 +24,7 @@ namespace Blogger.Controllers
         [HttpPost]
         public async Task<ActionResult> CreatePost([FromBody] PostDto post)
         {
-            if(post.IsValid())
+            if(post.IsValid(DtoTypes.RequestType.Create))
             {
                 var result = await postService.Create(post.GetPersistentObject());
                 string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
@@ -68,11 +68,7 @@ namespace Blogger.Controllers
         [HttpPut]
         public async Task<ActionResult<Post>> UpdatePost(PostDto post)
         {
-            if(post.Id == Guid.Empty)
-            {
-                return BadRequest();
-            }
-            if(!post.IsValid())
+            if(!post.IsValid(DtoTypes.RequestType.Update))
             {
                 return BadRequest(post.Error);
             }

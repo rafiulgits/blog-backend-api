@@ -1,4 +1,5 @@
 using System;
+using Blogger.Data.Dto;
 
 namespace Blogger.Data.Dto
 {
@@ -11,9 +12,19 @@ namespace Blogger.Data.Dto
 
         public ErrorDto Error = ErrorDto.Empty();
 
-        public bool IsValid()
+        public bool IsValid(DtoTypes.RequestType type)
         {
-            return IsValidTitle() && IsValidBody();
+            bool validInstance = IsValidTitle() && IsValidBody() && IsValidDateTime();
+
+            if (type == DtoTypes.RequestType.Create)
+            {
+                return validInstance;
+            }
+            else if(type == DtoTypes.RequestType.Update)
+            {
+                return validInstance && IsValidId();
+            }
+            return false;
         }
 
         private bool IsValidTitle()
@@ -40,6 +51,28 @@ namespace Blogger.Data.Dto
             {
                 Error.Field = "body";
                 Error.Message = "only whitespace is not allowed in body";
+                return false;
+            }
+            return true;
+        }
+
+        private bool IsValidId()
+        {
+            if(Id == Guid.Empty)
+            {
+                Error.Field = "id";
+                Error.Message = "Post Id is required";
+                return false;
+            }
+            return true;
+        }
+
+        private bool IsValidDateTime()
+        {
+            if(CreatedOn <= DateTime.MinValue)
+            {
+                Error.Field = "createdOn";
+                Error.Message = "required a valid Date-Time";
                 return false;
             }
             return true;
