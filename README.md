@@ -10,6 +10,30 @@ Support `JSON` and `XML` serialization and deserialization.
 
 
 
+## DTO Models
+
+### Post DTO
+
+This model is used to transfer a `Post` object from client to server and validate the object on required criteria.
+
+* **Id** : UUID4/GUID
+* **Title** : String
+* **Body** : String
+* **CreatedOn** : Date-Time
+
+
+
+### Error DTO
+
+This model is used to transfer an Error from server to client whenever client request invalid formation of data.
+
+* **Field** : String
+* **Message** : String
+
+
+
+
+
 ## Response Status
 
 | Status Code               | Reason                                                       |
@@ -21,6 +45,8 @@ Support `JSON` and `XML` serialization and deserialization.
 | 405 Method Not Allowed    | If requested method doesn't support by the endpoint          |
 | 406 Not Acceptable        | If requested form (`Content-Type` and `Accept`) doesn't support by the system. See **Content Negotiation** |
 | 500 Internal Server Error | Whenever server is failed to execute or finish a task.       |
+
+
 
 
 
@@ -225,6 +251,48 @@ To update an existing post.
 #### `GET` `/api/Post/{id}`
 
 To fetch a particular post object. This endpoint take an `Id` as parameter and return the associated `Post` object.
+
+
+
+**Required Parameter**
+
+* Id : GUID/UUID4
+
+
+
+**Response**
+
+* JSON Response
+
+```json
+{
+  "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
+  "title": "string",
+  "body": "string",
+  "createdOn": "2020-02-26T11:29:54.129Z",
+  "lastUpdateOn": "0001-01-01T00:00:00"
+}
+```
+
+* XML Response
+
+```xml
+<Post xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>609964d6-3ab3-446f-980e-08d7baaf36fe</Id>
+  <Title>string</Title>
+  <Body>string</Body>
+  <CreatedOn>2020-02-26T11:29:54.129Z</CreatedOn>
+  <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
+</Post>
+```
+
+
+
+
+
+#### `DELETE` `/api/Post/{id}`
+
+To delete a particular post object. This endpoint take an `Id` as parameter and return the associated `Post` object after deletion.
 
 
 

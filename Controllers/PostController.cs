@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Blogger.Data;
 using Blogger.Data.Dto;
@@ -23,10 +24,11 @@ namespace Blogger.Controllers
         [HttpPost]
         public async Task<ActionResult> CreatePost([FromBody] PostDto post)
         {
-            if(post.IsValid())
+            if(post.IsValid(DtoTypes.RequestType.Create))
             {
                 var result = await postService.Create(post.GetPersistentObject());
-                return Created(result.Id.ToString(), result);
+                string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
+                return Created(refUrl, result);
             }
             return BadRequest(post.Error);
         }
@@ -66,16 +68,23 @@ namespace Blogger.Controllers
         [HttpPut]
         public async Task<ActionResult<Post>> UpdatePost(PostDto post)
         {
-            if(post.Id == Guid.Empty)
-            {
-                return BadRequest();
-            }
-            if(!post.IsValid())
+            if(!post.IsValid(DtoTypes.RequestType.Update))
             {
                 return BadRequest(post.Error);
             }
 
             var result = await postService.Update(post.GetPersistentObject(), post.Id);
+            if(result == null)
+            {
+                return NotFound();
+            }
+            return result;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Post>> DeletePost(Guid id)
+        {
+            var result = await postService.Delete(id);
             if(result == null)
             {
                 return NotFound();
