@@ -11,5 +11,11 @@ namespace Blogger.Data
         {
             options.UseSqlServer(AppOptionProvider.DbOptions.ToString());
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<User>().HasIndex(user => user.Email).IsUnique();
+            builder.Entity<User>().HasIndex(user => user.BlogName).IsUnique();
+        }
     }
 }
