@@ -34,9 +34,9 @@ namespace Blogger.Data
         }
 
 
-        public async Task<Post> Delete(Post post)
+        public async Task<Post> Delete(Post entity)
         {
-            var result = Context.Remove<Post>(post);
+            var result = Context.Remove<Post>(entity);
             await Context.SaveChangesAsync();
             return result.Entity;
         }

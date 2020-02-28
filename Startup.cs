@@ -40,6 +40,7 @@ namespace Blogger
             services.AddSingleton<BloggerContext>();
             services.AddScoped<PostRepository>();
             services.AddScoped<PostService>();
+            services.AddScoped<UserRepository>();
             services.AddControllers(options => 
             {
                 options.RespectBrowserAcceptHeader = true;

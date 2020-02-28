@@ -66,7 +66,7 @@ namespace Blogger.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Post>> UpdatePost(PostDto post)
+        public async Task<ActionResult<Post>> UpdatePost([FromBody]PostDto post)
         {
             if(!post.IsValid(DtoTypes.RequestType.Update))
             {

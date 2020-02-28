@@ -6,6 +6,7 @@ namespace Blogger.Data
     public class BloggerContext : DbContext
     {
         public DbSet<Post> Posts {set; get;}
+        public DbSet<User> Users {set; get;}
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
