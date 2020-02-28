@@ -36,6 +36,7 @@ namespace Blogger.Services
             fetchedPost.Title = post.Title;
             fetchedPost.Body = post.Body;
             fetchedPost.CreatedOn = post.CreatedOn;
+            fetchedPost.LastUpdateOn = DateTime.Now;
             return await PostRepo.Update(fetchedPost);
         }
 
