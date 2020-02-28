@@ -21,7 +21,7 @@ namespace Blogger.Data
         public DateTime LastUpdateOn {set; get;}
 
         [Required]
-        [ForeignKey("User")]
+        [ForeignKey("Author")]
         public int AuthorId { set; get; }
 
         public User Author { set; get; }
