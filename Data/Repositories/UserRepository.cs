@@ -20,7 +20,7 @@ namespace Blogger.Data
 
         public async Task<User> Add(User entity)
         {
-            var result = await Context.AddAsync<User>(entity);
+            var result = await Context.Users.AddAsync(entity);
             await Context.SaveChangesAsync();
             return result.Entity;
         }
