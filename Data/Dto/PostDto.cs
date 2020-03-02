@@ -9,6 +9,8 @@ namespace Blogger.Data.Dto
         public string Title {set; get;}
         public string Body {set; get;}
         public DateTime CreatedOn {set; get;}
+        
+        public int AuthorId;
 
         public ErrorDto Error = ErrorDto.Empty();
 
@@ -84,7 +86,8 @@ namespace Blogger.Data.Dto
             {
                 Title = this.Title,
                 Body = this.Body,
-                CreatedOn = this.CreatedOn
+                CreatedOn = this.CreatedOn,
+                AuthorId = this.AuthorId
             };
         }
     }

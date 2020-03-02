@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Blogger.Data;
 using Blogger.Data.Dto;
 using Blogger.Services;
+using Microsoft.AspNetCore.Authorization;
+using Blogger.Extensions;
 
 namespace Blogger.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PostController : ControllerBase
@@ -26,6 +29,7 @@ namespace Blogger.Controllers
         {
             if(post.IsValid(DtoTypes.RequestType.Create))
             {
+                post.AuthorId = HttpContext.GetUserId();
                 var result = await postService.Create(post.GetPersistentObject());
                 string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
@@ -33,6 +37,7 @@ namespace Blogger.Controllers
             return BadRequest(post.Error);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(Guid id)
         {
@@ -44,6 +49,7 @@ namespace Blogger.Controllers
             return result;
         }
 
+        [AllowAnonymous]
         [HttpGet("page/{number}")]
         public async Task<ActionResult<List<Post>>> GetPaginate(int number)
         {
@@ -59,6 +65,7 @@ namespace Blogger.Controllers
             return await postService.GetPage(number);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<Post>>> GetAllPosts()
         {
@@ -66,30 +73,40 @@ namespace Blogger.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Post>> UpdatePost([FromBody]PostDto post)
+        public async Task<ActionResult<Post>> UpdatePost([FromBody]PostDto postDto)
         {
-            if(!post.IsValid(DtoTypes.RequestType.Update))
+            var post = await postService.Get(postDto.Id);
+            if (post.AuthorId != HttpContext.GetUserId())
             {
-                return BadRequest(post.Error);
+                return Unauthorized();
+            }
+            if (!postDto.IsValid(DtoTypes.RequestType.Update))
+            {
+                return BadRequest(postDto.Error);
             }
 
-            var result = await postService.Update(post.GetPersistentObject(), post.Id);
+            var result = await postService.Update(postDto.GetPersistentObject(), post.Id);
             if(result == null)
             {
                 return NotFound();
             }
-            return result;
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Post>> DeletePost(Guid id)
         {
+            var post = await postService.Get(id);
+            if(post.AuthorId != HttpContext.GetUserId())
+            {
+                return Unauthorized();
+            }
             var result = await postService.Delete(id);
             if(result == null)
             {
                 return NotFound();
             }
-            return result;
+            return Ok(result);
         }
     }
 }
