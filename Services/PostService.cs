@@ -26,27 +26,16 @@ namespace Blogger.Services
             return await PostRepo.Get(id);
         }
 
-        public async Task<Post> Update(Post post, Guid id)
+        public async Task<Post> Update(Post olderPost, Post updatedPost)
         {
-            Post fetchedPost = await PostRepo.Get(id);
-            if(fetchedPost == null)
-            {
-                return null;
-            }
-            fetchedPost.Title = post.Title;
-            fetchedPost.Body = post.Body;
-            fetchedPost.CreatedOn = post.CreatedOn;
-            fetchedPost.LastUpdateOn = DateTime.Now;
-            return await PostRepo.Update(fetchedPost);
+            olderPost.Title = updatedPost.Title;
+            olderPost.Body = updatedPost.Body;
+            olderPost.LastUpdateOn = System.DateTime.Now;
+            return await PostRepo.Update(olderPost);
         }
 
-        public async Task<Post> Delete(Guid id)
+        public async Task<Post> Delete(Post post)
         {
-            var post = await PostRepo.Get(id);
-            if(post == null)
-            {
-                return null;
-            }
             return await PostRepo.Delete(post);
         }
 

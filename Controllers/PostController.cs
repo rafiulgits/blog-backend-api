@@ -25,16 +25,17 @@ namespace Blogger.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreatePost([FromBody] PostDto post)
+        public async Task<ActionResult<Post>> CreatePost([FromBody] PostDto postDto)
         {
-            if(post.IsValid(DtoTypes.RequestType.Create))
+            var post = postDto.GetPersistentObject();
+            if(TryValidateModel(post))
             {
                 post.AuthorId = HttpContext.GetUserId();
-                var result = await postService.Create(post.GetPersistentObject());
+                var result = await postService.Create(post);
                 string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
             }
-            return BadRequest(post.Error);
+            return BadRequest(ModelState);
         }
 
         [AllowAnonymous]
@@ -73,40 +74,45 @@ namespace Blogger.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Post>> UpdatePost([FromBody]PostDto postDto)
+        public async Task<ActionResult> UpdatePost([FromBody]PostDto postDto)
         {
-            var post = await postService.Get(postDto.Id);
-            if (post.AuthorId != HttpContext.GetUserId())
+            if(postDto.Id == Guid.Empty)
             {
-                return Unauthorized();
+                var error = new ErrorDto().Append("Id", "this field Id is required to update a post object");
+                return BadRequest(error);
             }
-            if (!postDto.IsValid(DtoTypes.RequestType.Update))
-            {
-                return BadRequest(postDto.Error);
-            }
-
-            var result = await postService.Update(postDto.GetPersistentObject(), post.Id);
-            if(result == null)
+            var post = postDto.GetPersistentObject();
+            var oldPost = await postService.Get(post.Id);
+            if(oldPost == null)
             {
                 return NotFound();
             }
-            return Ok(result);
+            if(oldPost.AuthorId != HttpContext.GetUserId())
+            {
+                return Forbid();
+            }
+            if(TryValidateModel(post))
+            {
+                var result = await postService.Update(oldPost, post);
+                return Ok(result);
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Post>> DeletePost(Guid id)
         {
             var post = await postService.Get(id);
-            if(post.AuthorId != HttpContext.GetUserId())
-            {
-                return Unauthorized();
-            }
-            var result = await postService.Delete(id);
-            if(result == null)
+            if(post == null)
             {
                 return NotFound();
             }
-            return Ok(result);
+            if(post.AuthorId != HttpContext.GetUserId())
+            {
+                return Forbid();
+            };
+            var result = await postService.Delete(post);
+            return Ok(post);
         }
     }
 }

@@ -21,15 +21,20 @@ namespace Blogger.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] UserDto user)
+        public async Task<ActionResult<TokenDto>> Create([FromBody] UserDto userDto)
         {
-            if(user.IsValid(DtoTypes.RequestType.Create))
+            var user = userDto.GetPersistentObject();
+            if(TryValidateModel(user))
             {
-                var result =  await userService.Create(user.GetPersistentObject());
-                var response = new TokenDto() { Bearer = result.GetToken() };
-                return Ok(response);
+                var result = await userService.Create(user);
+                if(result.IsValid)
+                {
+                    var response = new TokenDto() { Bearer = result.Data.GetToken() };
+                    return Ok(response);
+                }
+                return BadRequest(result.Error);
             }
-            return BadRequest(user.Error);
+            return BadRequest(ModelState);
         }
 
         [HttpGet]

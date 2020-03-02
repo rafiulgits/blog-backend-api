@@ -21,13 +21,13 @@ namespace Blogger.Controllers
         [HttpPost]
         public ActionResult Login([FromBody] AuthDto authDto)
         {
-            var result = authService.Authenticate(authDto);
-            if(result != null)
+            var result = authService.Authenticate(authDto.Email, authDto.Password);
+            if (result.IsValid)
             {
-                var response = new TokenDto() { Bearer = result.GetToken() };
+                var response = new TokenDto() { Bearer = result.Data.GetToken() };
                 return Ok(response);
             }
-            return BadRequest();
+            return BadRequest(result.Error);
         }
     }
 }

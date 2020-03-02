@@ -1,37 +1,41 @@
 ﻿using Blogger.Data;
-using Blogger.Data.Dto;
 using Blogger.Extensions;
 using Blogger.Util;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Blogger.Services
 {
-    public class AuthService
+    public class AuthService : DataDependentService<User>
     {
         private readonly UserRepository UserRepo;
-        public AuthService(UserRepository userRepository)
+        public AuthService(UserRepository userRepository) 
         {
             UserRepo = userRepository;
         }
 
-        public User Authenticate(AuthDto authDto)
+        public DataDependentResult<User> Authenticate(string email , string password)
         {
-            string requestEmail = authDto.Email.ToLower();
-            string requestPassword = authDto.Password;
-
-            User user = UserRepo.GetQueryableHandler().Where(user => user.Email == requestEmail)
-                                                      .FirstOrDefault();
+            User user = UserRepo.GetQueryableHandler()
+                                .Where(user => user.Email == email)
+                                .FirstOrDefault();
             if(user != null)
             {
-                if (user.CheckPassword(requestPassword))
+                if (user.CheckPassword(password))
                 {
-                    return user;
+                    Result.Data = user;
+                    Result.IsValid = true;
+                }
+                else
+                {
+                    Result.Error.Append("Password", "incorrect password");
                 }
             }
-            return null;
+            else
+            {
+                Result.Error.Append("Email", "no user found with this email address");
+            }
+            return Result;
         }
     }
 }
