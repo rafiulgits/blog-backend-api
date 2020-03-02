@@ -27,7 +27,7 @@ namespace Blogger.Controllers
                 var response = new TokenDto() { Bearer = result.Data.GetToken() };
                 return Ok(response);
             }
-            return BadRequest(result.Error);
+            return Unauthorized(result.Error);
         }
     }
 }
