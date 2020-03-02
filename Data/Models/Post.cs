@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blogger.Data
 {
@@ -18,5 +19,11 @@ namespace Blogger.Data
         public DateTime CreatedOn {set; get;}
         
         public DateTime LastUpdateOn {set; get;}
+
+        [Required]
+        [ForeignKey("Author")]
+        public int AuthorId { set; get; }
+
+        public User Author { set; get; }
     }
 }

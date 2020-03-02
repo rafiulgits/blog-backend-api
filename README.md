@@ -28,7 +28,38 @@ This model is used to transfer a `Post` object from client to server and validat
 This model is used to transfer an Error from server to client whenever client request invalid formation of data.
 
 * **Field** : String
-* **Message** : String
+* **Message** : List of String
+
+
+
+### User DTO
+
+This model is used to transfer the information about  a new user on this system.
+
+* **Email** : String
+* **FirstName** : String
+* **LastName** : String
+* **Password** : String
+* **BlogName** : String
+
+
+
+
+### AUTH DTO
+
+This model is used transfer user credentials to server
+
+* **Email** : String | *format : example@mail.com
+* **Password** : String 
+
+
+
+### Token DTO
+
+This model is used to transfer user access token from server to client side
+
+* **Bearer** : String | *JWT Token*
+
 
 
 
@@ -41,6 +72,8 @@ This model is used to transfer an Error from server to client whenever client re
 | 200 OK                    | Successful `GET` ,`PUT`, `DELETE` request                    |
 | 201 Created               | Success `POST` request                                       |
 | 400 Bad Request           | Validation requirements or formation error                   |
+| 401 Unauthorized          | When anonymous user want to access any authenticated endpoint |
+| 403 Forbidden             | User doesn't have the permission to access that endpoint     |
 | 404 Not Found             | If requested result not found by the system                  |
 | 405 Method Not Allowed    | If requested method doesn't support by the endpoint          |
 | 406 Not Acceptable        | If requested form (`Content-Type` and `Accept`) doesn't support by the system. See **Content Negotiation** |
@@ -62,7 +95,7 @@ This model is used to transfer an Error from server to client whenever client re
 
 This endpoint is for create a new blog post.  Request body or data support `JSON` and `XML` formation defined in `Content-Type` header. For invalid body (syntax and format) server will return `400 Bad Request` with error message. Otherwise `201 Created` response will be served in required format.
 
-
+**Authentication Required**
 
 **Body**
 
@@ -176,7 +209,7 @@ This endpoint is for get all available posts in database. If no post available i
 
 To update an existing post.
 
-
+**Authentication Required**
 
 **Required Body**
 
@@ -294,7 +327,7 @@ To fetch a particular post object. This endpoint take an `Id` as parameter and r
 
 To delete a particular post object. This endpoint take an `Id` as parameter and return the associated `Post` object after deletion.
 
-
+**Authentication Required**
 
 **Required Parameter**
 
@@ -371,4 +404,168 @@ This endpoint allow to paginate through all posts by taking the page number. Thi
       "lastUpdateOn": "0001-01-01T00:00:00"
     }
   ]
+```
+
+
+
+
+
+### User Management
+
+
+
+#### `POST /api/User`
+
+To create or register a new user on that system
+
+
+
+**Request**
+
+* JSON
+
+```json
+{
+  "firstName": "Mr",
+  "lastName": "Wolf",
+  "email": "wolf@mail.com",
+  "password": "12345678",
+  "blogName": "wolfBlog"
+}
+```
+
+
+
+* XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<UserDto>
+	<FirstName>string</FirstName>
+	<LastName>string</LastName>
+	<Email>string</Email>
+	<Password>string</Password>
+	<BlogName>string</BlogName>
+</UserDto>
+```
+
+
+
+
+
+**Response**
+
+* JSON
+
+```json
+{
+  "bearer": "token"
+}
+```
+
+
+
+* XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<TokenDto>
+	<Bearer>token</Bearer>
+</TokenDto>
+```
+
+
+
+
+
+
+
+#### `GET /api/User`
+
+To fetch user profile
+
+**Authentication Required**
+
+**Response**
+
+* JSON
+
+```json
+{
+  "id": 13,
+  "firstName": "Rafiul",
+  "lastName": "Islam",
+  "email": "rafi@mail.com",
+  "blogName": "rafiulblog"
+}
+```
+
+
+
+* XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<User xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <Id>13</Id>
+   <FirstName>Rafiul</FirstName>
+   <LastName>Islam</LastName>
+   <Email>rafi@mail.com</Email>
+   <BlogName>rafiulblog</BlogName>
+</User>
+```
+
+
+
+
+
+### Authentication Management
+
+#### `POST /api/Auth`
+
+To generate a new access token with existing user credentials. User have to provide a valid `Email` and `Password` pair.
+
+
+
+**Request**
+
+* JSON
+
+```json
+{
+  "email": "user@mail.com",
+  "password": "pass1234"
+}
+```
+
+* XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthDto>
+	<Email>string</Email>
+	<Password>string</Password>
+</AuthDto>
+```
+
+
+
+**Response**
+* JSON
+
+```json
+{
+  "bearer": "token"
+}
+```
+
+
+
+* XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<TokenDto>
+	<Bearer>token</Bearer>
+</TokenDto>
 ```

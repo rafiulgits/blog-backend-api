@@ -22,14 +22,35 @@ namespace Blogger
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
+            MapConfigurations();
+        }
+
+        private void MapConfigurations()
+        {
+            MapDbCongfiguration();
+            MapSwaggerCongfiguration();
+            MapJwtConfiguration();
+        }
+
+        private void MapDbCongfiguration()
+        {
             DbOptions dbOptions = new DbOptions();
             Configuration.GetSection(nameof(DbOptions)).Bind(dbOptions);
             AppOptionProvider.DbOptions = dbOptions;
+        }
 
+        private void MapSwaggerCongfiguration()
+        {
             SwaggerOptions swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
             AppOptionProvider.SwaggerOptions = swaggerOptions;
+        }
+
+        private void MapJwtConfiguration()
+        {
+            JwtOptions jwtOptions = new JwtOptions();
+            Configuration.GetSection(nameof(JwtOptions)).Bind(jwtOptions);
+            AppOptionProvider.JwtOptions = jwtOptions;
         }
 
         public IConfiguration Configuration { get; }
@@ -40,11 +61,15 @@ namespace Blogger
             services.AddSingleton<BloggerContext>();
             services.AddScoped<PostRepository>();
             services.AddScoped<PostService>();
+            services.AddScoped<UserRepository>();
+            services.AddScoped<UserService>();
+            services.AddScoped<AuthService>();
             services.AddControllers(options => 
             {
                 options.RespectBrowserAcceptHeader = true;
                 options.ReturnHttpNotAcceptable = true;
             }).AddXmlSerializerFormatters();
+            services.AddJwtAuthentication();
             services.ConfigureSwaggerPage();
         }
 
@@ -57,12 +82,12 @@ namespace Blogger
             }
             
             app.UseCustomExceptionHandler();
-            
-            var swaggerOptions = AppOptionProvider.SwaggerOptions;
-            app.UseSwagger(op => {op.RouteTemplate = swaggerOptions.JsonRoute; });
-            app.UseSwaggerUI(op => {op.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);});
+
+            app.UseSwaggerMiddleware();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,9 +35,9 @@ namespace Blogger.Data
         }
 
 
-        public async Task<Post> Delete(Post post)
+        public async Task<Post> Delete(Post entity)
         {
-            var result = Context.Remove<Post>(post);
+            var result = Context.Remove<Post>(entity);
             await Context.SaveChangesAsync();
             return result.Entity;
         }
