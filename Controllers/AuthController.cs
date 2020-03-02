@@ -19,7 +19,7 @@ namespace Blogger.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login([FromBody] AuthDto authDto)
+        public ActionResult<TokenDto> Login([FromBody] AuthDto authDto)
         {
             var result = authService.Authenticate(authDto.Email, authDto.Password);
             if (result.IsValid)

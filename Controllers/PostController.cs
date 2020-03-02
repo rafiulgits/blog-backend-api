@@ -69,14 +69,14 @@ namespace Blogger.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult> GetAllPosts()
+        public async Task<ActionResult<Post>> GetAllPosts()
         {
             var result = await postService.GetAll();
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdatePost([FromBody]PostDto postDto)
+        public async Task<ActionResult<Post>> UpdatePost([FromBody]PostDto postDto)
         {
             if(postDto.Id == Guid.Empty)
             {

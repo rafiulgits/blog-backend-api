@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Blogger.Data;
 using Blogger.Data.Dto;
 using Blogger.Extensions;
 using Blogger.Services;
@@ -38,7 +39,7 @@ namespace Blogger.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Profile()
+        public async Task<ActionResult<User>> Profile()
         {
             string id = HttpContext.User.Identity.Name;
             var result = await userService.Get(id);
