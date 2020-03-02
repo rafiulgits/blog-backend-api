@@ -47,7 +47,7 @@ namespace Blogger.Controllers
             {
                 return NotFound();
             }
-            return result;
+            return Ok(result);
         }
 
         [AllowAnonymous]
@@ -63,14 +63,16 @@ namespace Blogger.Controllers
                     return await postService.GetPage(number, 10 ,true);
                 }
             }
-            return await postService.GetPage(number);
+            var result = await postService.GetPage(number);
+            return Ok(result);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<Post>>> GetAllPosts()
+        public async Task<ActionResult> GetAllPosts()
         {
-            return await postService.GetAll();
+            var result = await postService.GetAll();
+            return Ok(result);
         }
 
         [HttpPut]
@@ -112,7 +114,7 @@ namespace Blogger.Controllers
                 return Forbid();
             };
             var result = await postService.Delete(post);
-            return Ok(post);
+            return Ok(result);
         }
     }
 }
