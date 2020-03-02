@@ -1,8 +1,8 @@
 ﻿using Blogger.Data;
 using Blogger.Options;
+using Blogger.Util;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -12,7 +12,7 @@ namespace Blogger.Extensions
     {
         public static string GetToken(this User user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenHandler = JwtTokenHandler.GetTokenHandler();
             var key = Encoding.ASCII.GetBytes(AppOptionProvider.JwtOptions.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -28,26 +28,15 @@ namespace Blogger.Extensions
             return tokenHandler.WriteToken(token);
         }
 
-        private static string GetEncryptedValue(string password)
-        {
-            string hashValue = System.Convert.ToBase64String(Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
-                password: password,
-                salt: System.Text.Encoding.UTF8.GetBytes(AppOptionProvider.JwtOptions.Secret),
-                prf: Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA256,
-                iterationCount: 1000,
-                numBytesRequested: 256 / 8
-            ));
-            return hashValue;
-        }
 
         public static void SetPassword(this User user, string rawPassword)
         {
-            user.Password = GetEncryptedValue(rawPassword);
+            user.Password = Crypto.GetHashedPassword(rawPassword);
         }
 
         public static bool CheckPassword(this User user, string rawPassword)
         {
-            return user.Password == GetEncryptedValue(rawPassword);
+            return user.Password == Crypto.GetHashedPassword(rawPassword);
         }
     }
 }
