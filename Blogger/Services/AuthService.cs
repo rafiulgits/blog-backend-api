@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Blogger.Services
 {
-    public class AuthService : DataDependentService<User>
+    public class AuthService : DataDependentService<User>, IAuthService
     {
-        private readonly UserRepository UserRepo;
-        public AuthService(UserRepository userRepository) 
+        private readonly IUserRepository UserRepo;
+        public AuthService(IUserRepository userRepository)
         {
             UserRepo = userRepository;
         }

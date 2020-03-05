@@ -59,11 +59,12 @@ namespace Blogger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<BloggerContext>();
-            services.AddScoped<PostRepository>();
-            services.AddScoped<PostService>();
-            services.AddScoped<UserRepository>();
-            services.AddScoped<UserService>();
-            services.AddScoped<AuthService>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddControllers(options => 
             {
                 options.RespectBrowserAcceptHeader = true;

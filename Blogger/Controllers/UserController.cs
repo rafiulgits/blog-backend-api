@@ -12,17 +12,17 @@ namespace Blogger.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
-        private readonly UserService userService;
-        public UserController(UserService userService)
+        private readonly IUserService userService;
+        public UserController(IUserService userService)
         {
             this.userService = userService;
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<TokenDto>> Create([FromBody] UserDto userDto)
+        public async Task<ActionResult> Create([FromBody] UserDto userDto)
         {
             var user = userDto.GetPersistentObject();
             if(TryValidateModel(user))
@@ -39,7 +39,7 @@ namespace Blogger.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> Profile()
+        public async Task<ActionResult> Profile()
         {
             string id = HttpContext.User.Identity.Name;
             var result = await userService.Get(id);

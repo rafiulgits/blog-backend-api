@@ -7,11 +7,11 @@ using Blogger.Data;
 
 namespace Blogger.Services
 {
-    public class PostService
+    public class PostService : IPostService
     {
-        public PostRepository PostRepo;
+        public IPostRepository PostRepo;
 
-        public PostService(PostRepository postRepository)
+        public PostService(IPostRepository postRepository)
         {
             PostRepo = postRepository;
         }
@@ -47,7 +47,7 @@ namespace Blogger.Services
                                 .ToListAsync();
         }
 
-        public async Task<List<Post>> GetPage(int page, int pageSize=10, bool descOrder=false)
+        public async Task<List<Post>> GetPage(int page, int pageSize, bool descOrder)
         {
             if(page <=0)
             {

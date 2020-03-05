@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Blogger.Data
 {
-    public class PostRepository : IRepository<Guid, Post>
+    public class PostRepository : IPostRepository
     {
 
         private readonly BloggerContext Context;

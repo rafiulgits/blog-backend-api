@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Blogger.Data
 {
-    public class UserRepository : IRepository<int, User>
+    public class UserRepository : IUserRepository
     {
 
         private readonly BloggerContext Context;

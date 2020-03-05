@@ -3,7 +3,7 @@ using Blogger.Extensions;
 using Blogger.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using System;
 
 namespace Blogger.Controllers
 {
@@ -11,15 +11,15 @@ namespace Blogger.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly AuthService authService;
+        private readonly IAuthService authService;
 
-        public AuthController(AuthService authService)
+        public AuthController(IAuthService authService)
         {
             this.authService = authService;
         }
 
         [HttpPost]
-        public ActionResult<TokenDto> Login([FromBody] AuthDto authDto)
+        public ActionResult Login([FromBody] AuthDto authDto)
         {
             var result = authService.Authenticate(authDto.Email, authDto.Password);
             if (result.IsValid)
@@ -27,6 +27,7 @@ namespace Blogger.Controllers
                 var response = new TokenDto() { Bearer = result.Data.GetToken() };
                 return Ok(response);
             }
+
             return Unauthorized(result.Error);
         }
     }
