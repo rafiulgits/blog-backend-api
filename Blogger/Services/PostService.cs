@@ -18,6 +18,7 @@ namespace Blogger.Services
 
         public async Task<Post> Create(Post post)
         {
+            post.LastUpdateOn = DateTime.Now;
             return await PostRepo.Add(post);
         }
 
@@ -30,7 +31,7 @@ namespace Blogger.Services
         {
             olderPost.Title = updatedPost.Title;
             olderPost.Body = updatedPost.Body;
-            olderPost.LastUpdateOn = System.DateTime.Now;
+            olderPost.LastUpdateOn = DateTime.Now;
             return await PostRepo.Update(olderPost);
         }
 

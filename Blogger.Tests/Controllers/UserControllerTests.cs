@@ -150,7 +150,7 @@ namespace Blogger.Tests.Controllers
             var controller = new UserController(mockService.Object);
             controller.ObjectValidator = GetValidator();
             ControllerContext controllerContext = GetControllerContext();
-            controllerContext.HttpContext.Request.Path = "api/User/";
+            controllerContext.HttpContext.Request.Path = "/api/User/";
             controller.ControllerContext = controllerContext;
 
             var userDto = GetUserDto();
