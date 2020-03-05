@@ -14,6 +14,11 @@ namespace Blogger.Data
             
         }
 
+        public BloggerContext()
+        {
+
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if(!options.IsConfigured)
