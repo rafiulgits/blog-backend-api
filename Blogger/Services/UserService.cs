@@ -1,19 +1,16 @@
 ﻿using Blogger.Data;
-using Blogger.Data.Dto;
 using Blogger.Extensions;
 using Blogger.Util;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Blogger.Services
 {
-    public class UserService : DataDependentService<User>
+    public class UserService : DataDependentService<User>, IUserService
     {
-        public UserRepository UserRepo;
+        public IUserRepository UserRepo;
 
-        public UserService(UserRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             UserRepo = userRepository;
         }

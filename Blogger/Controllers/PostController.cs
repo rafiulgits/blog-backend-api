@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Blogger.Data;
 using Blogger.Data.Dto;
 using Blogger.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,22 +14,22 @@ namespace Blogger.Controllers
     public class PostController : ControllerBase
     {
 
-        private readonly PostService postService;
+        private readonly IPostService postService;
 
-        public PostController(PostService postService)
+        public PostController(IPostService postService)
         {
             this.postService = postService;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Post>> CreatePost([FromBody] PostDto postDto)
+        public async Task<ActionResult> CreatePost([FromBody] PostDto postDto)
         {
             var post = postDto.GetPersistentObject();
             if(TryValidateModel(post))
             {
                 post.AuthorId = HttpContext.GetUserId();
                 var result = await postService.Create(post);
-                string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
+                string refUrl = $"{HttpContext.GetCurrentRequestUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
             }
             return BadRequest(ModelState);
@@ -40,7 +37,7 @@ namespace Blogger.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(Guid id)
+        public async Task<ActionResult> GetPost(Guid id)
         {
             var result = await postService.Get(id);
             if(result == null)
@@ -52,7 +49,7 @@ namespace Blogger.Controllers
 
         [AllowAnonymous]
         [HttpGet("page/{number}")]
-        public async Task<ActionResult<List<Post>>> GetPaginate(int number)
+        public async Task<ActionResult> GetPaginate(int number)
         {
             var queryOrder = Request.Query["order"].ToString();
             if(!String.IsNullOrEmpty(queryOrder))
@@ -60,23 +57,24 @@ namespace Blogger.Controllers
                 queryOrder = queryOrder.ToLower();
                 if(queryOrder == "desc")
                 {
-                    return await postService.GetPage(number, 10 ,true);
+                    var resultWithOrder = await postService.GetPage(number, 10, true);
+                    return Ok(resultWithOrder);
                 }
             }
-            var result = await postService.GetPage(number);
+            var result = await postService.GetPage(number, 10, false);
             return Ok(result);
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<Post>> GetAllPosts()
+        public async Task<ActionResult> GetAllPosts()
         {
             var result = await postService.GetAll();
             return Ok(result);
         }
 
         [HttpPut]
-        public async Task<ActionResult<Post>> UpdatePost([FromBody]PostDto postDto)
+        public async Task<ActionResult> UpdatePost([FromBody]PostDto postDto)
         {
             if(postDto.Id == Guid.Empty)
             {
@@ -102,7 +100,7 @@ namespace Blogger.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Post>> DeletePost(Guid id)
+        public async Task<ActionResult> DeletePost(Guid id)
         {
             var post = await postService.Get(id);
             if(post == null)

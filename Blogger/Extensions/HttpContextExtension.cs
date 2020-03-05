@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Blogger.Extensions
 {
@@ -15,6 +14,12 @@ namespace Blogger.Extensions
                 return -1;
             }
             return int.Parse(httpContext.User.Identity.Name);
+        }
+
+        public static string GetCurrentRequestUrl(this HttpContext httpContext)
+        {
+
+            return $"{httpContext.Request.GetDisplayUrl()}";
         }
     }
 }

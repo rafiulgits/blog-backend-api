@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Blogger.Data
 {
-    internal interface IRepository<IdType, EntityType>
+    public interface IRepository<IdType, EntityType>
     {
         Task<EntityType> Get(IdType id);
         Task<EntityType> Add(EntityType entity);

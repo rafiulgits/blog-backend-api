@@ -7,17 +7,18 @@ using Blogger.Data;
 
 namespace Blogger.Services
 {
-    public class PostService
+    public class PostService : IPostService
     {
-        public PostRepository PostRepo;
+        public IPostRepository PostRepo;
 
-        public PostService(PostRepository postRepository)
+        public PostService(IPostRepository postRepository)
         {
             PostRepo = postRepository;
         }
 
         public async Task<Post> Create(Post post)
         {
+            post.LastUpdateOn = DateTime.Now;
             return await PostRepo.Add(post);
         }
 
@@ -30,7 +31,7 @@ namespace Blogger.Services
         {
             olderPost.Title = updatedPost.Title;
             olderPost.Body = updatedPost.Body;
-            olderPost.LastUpdateOn = System.DateTime.Now;
+            olderPost.LastUpdateOn = DateTime.Now;
             return await PostRepo.Update(olderPost);
         }
 
@@ -47,7 +48,7 @@ namespace Blogger.Services
                                 .ToListAsync();
         }
 
-        public async Task<List<Post>> GetPage(int page, int pageSize=10, bool descOrder=false)
+        public async Task<List<Post>> GetPage(int page, int pageSize, bool descOrder)
         {
             if(page <=0)
             {

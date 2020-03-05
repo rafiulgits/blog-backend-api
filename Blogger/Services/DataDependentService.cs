@@ -4,7 +4,7 @@ namespace Blogger.Services
 {
     public class DataDependentService<DataType>
     {
-        public DataDependentResult<DataType> Result { set; get; } = new DataDependentResult<DataType>();
+        public DataDependentResult<DataType> Result { set; get; }
 
         public DataDependentService()
         {
