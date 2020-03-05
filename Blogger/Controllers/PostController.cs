@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Blogger.Data;
 using Blogger.Data.Dto;
 using Blogger.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +29,7 @@ namespace Blogger.Controllers
             {
                 post.AuthorId = HttpContext.GetUserId();
                 var result = await postService.Create(post);
-                string refUrl = $"{HttpContext.Request.GetDisplayUrl()}/{result.Id.ToString()}";
+                string refUrl = $"{HttpContext.GetCurrentRequestUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
             }
             return BadRequest(ModelState);

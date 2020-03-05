@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Blogger.Data;
 using Blogger.Data.Dto;
 using Blogger.Extensions;
 using Blogger.Services;
@@ -31,7 +30,8 @@ namespace Blogger.Controllers
                 if(result.IsValid)
                 {
                     var response = new TokenDto() { Bearer = result.Data.GetToken() };
-                    return Ok(response);
+                    string refUrl = $"{HttpContext.GetCurrentRequestUrl()}";
+                    return Created(refUrl, response);
                 }
                 return BadRequest(result.Error);
             }

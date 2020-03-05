@@ -52,7 +52,6 @@ namespace Blogger.Tests.Controllers
             var actionResult = controller.Login(request) as OkObjectResult;
 
             Assert.NotNull(actionResult);
-            Assert.Equal("200", actionResult.StatusCode.ToString());
 
             var tokenDto = actionResult.Value as TokenDto;
             Assert.NotNull(tokenDto);
@@ -80,7 +79,6 @@ namespace Blogger.Tests.Controllers
             var actionResult = controller.Login(request) as UnauthorizedObjectResult;
 
             Assert.NotNull(actionResult);
-            Assert.Equal("401", actionResult.StatusCode.ToString());
 
             var errorDto = actionResult.Value as ErrorDto;
             Assert.NotNull(errorDto);
@@ -109,7 +107,6 @@ namespace Blogger.Tests.Controllers
             var actionResult = controller.Login(request) as UnauthorizedObjectResult;
 
             Assert.NotNull(actionResult);
-            Assert.Equal("401", actionResult.StatusCode.ToString());
 
             var errorDto = actionResult.Value as ErrorDto;
             Assert.NotNull(errorDto);
