@@ -9,15 +9,15 @@ namespace Blogger.Data.Dto
 {
     public class UserDto : IDto<User>
     {
-        public string FirstName { set; get; }
-        public string LastName { set; get; }
-        public string Email { set; get; }
-        public string Password { set; get; }
-        public string BlogName { set; get; }
+        public string FirstName { set; get; } = string.Empty;
+        public string LastName { set; get; } = string.Empty;
+        public string Email { set; get; } = string.Empty;
+        public string Password { set; get; } = string.Empty;
+        public string BlogName { set; get; } = string.Empty;
 
         public User GetPersistentObject()
         {
-            User user = new User()
+            return new User()
             {
                 FirstName = this.FirstName,
                 LastName = this.LastName,
@@ -25,7 +25,6 @@ namespace Blogger.Data.Dto
                 BlogName = this.BlogName.ToLower(),
                 Password = this.Password
             };
-            return user;
         }
 
     }
