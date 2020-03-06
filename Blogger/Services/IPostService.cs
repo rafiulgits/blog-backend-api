@@ -12,7 +12,8 @@ namespace Blogger.Services
         Task<Post> Create(Post post);
         Task<Post> Update(Post oldPost, Post newPost);
         Task<Post> Delete(Post entity);
-        Task<List<Post>> GetAll();
+        Task<List<Post>> GetAll(string filter);
         Task<List<Post>> GetPage(int skip, int top, bool descOrder);
+        Task<List<Post>> GetPostsByBlog(string name);
     }
 }

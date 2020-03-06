@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Blogger.Data;
+using Blogger.Extensions;
 
 namespace Blogger.Services
 {
@@ -41,12 +42,20 @@ namespace Blogger.Services
             return await PostRepo.Delete(post);
         }
 
-        public async Task<List<Post>> GetAll()
+        public async Task<List<Post>> GetAll(string filter)
         {
-           return await PostRepo.GetQueryableHandler()
-                                .AsQueryable()
-                                .Where(post => true)
-                                .ToListAsync();
+            if(!String.IsNullOrEmpty(filter))
+            {
+                return await PostRepo
+                    .GetQueryableHandler()
+                    .Where(post => post.Title.Contains(filter) || 
+                                   post.Body.Contains(filter) || 
+                                   post.Author.BlogName.Contains(filter))
+                    .ToListAsync();
+            }
+            return await PostRepo.GetQueryableHandler()
+                                 .Where(post => true)
+                                 .ToListAsync();
         }
 
         public async Task<List<Post>> GetPage(int skip, int top, bool descOrder)
@@ -71,6 +80,13 @@ namespace Blogger.Services
             return await resource.Skip(skip)
                                  .Take(top)
                                  .ToListAsync();
+        }
+
+        public async Task<List<Post>> GetPostsByBlog(string name)
+        {
+            name = name.ToLower();
+            var resource = PostRepo.GetQueryableHandler();
+            return await resource.Where(post => post.Author.BlogName == name).ToListAsync();
         }
     }
 }

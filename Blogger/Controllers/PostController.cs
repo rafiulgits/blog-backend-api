@@ -29,6 +29,7 @@ namespace Blogger.Controllers
             {
                 post.AuthorId = HttpContext.GetUserId();
                 var result = await postService.Create(post);
+                result.Author = null;
                 string refUrl = $"{HttpContext.GetCurrentRequestUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
             }
@@ -71,7 +72,8 @@ namespace Blogger.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAllPosts()
         {
-            var result = await postService.GetAll();
+            string filter = Request.Query["filter"];
+            var result = await postService.GetAll(filter);
             return Ok(result);
         }
 
@@ -115,6 +117,19 @@ namespace Blogger.Controllers
             };
             var result = await postService.Delete(post);
             return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("blog/{name}")]
+        public async Task<ActionResult> GetPostsByBlog(string name)
+        {
+            var result = await postService.GetPostsByBlog(name);
+            if(result.Count > 0)
+            {
+                return Ok(result);
+            }
+            return NotFound();
+            
         }
     }
 }
