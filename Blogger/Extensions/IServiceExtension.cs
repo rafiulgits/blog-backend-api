@@ -54,5 +54,17 @@ namespace Blogger.Extensions
                 };
             });
         }
+
+        public static void AddCorsOnPolicy(this IServiceCollection services, string name)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name,
+                builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+        }
     }
 }
