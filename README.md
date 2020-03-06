@@ -168,7 +168,13 @@ This endpoint is for create a new blog post.  Request body or data support `JSON
 
 #### `GET` `/api/Post`
 
-This endpoint is for get all available posts in database. If no post available in database then an empty array will return otherwise an array with available items. 
+This endpoint is for get all available posts in database. If no post available in database then an empty array will return otherwise an array with available items.  By providing query parameter `filter` client can filter a substring contains by `Title`, `Body` and `Author.BlogName`.
+
+
+
+**Query Parameter**
+
+* Filter : string
 
 
 
@@ -365,15 +371,20 @@ To delete a particular post object. This endpoint take an `Id` as parameter and 
 
 
 
-#### `GET` `/api/Post/page/{number}`
+#### `GET` `/api/Post/page`
 
-This endpoint allow to paginate through all posts by taking the page number. This page number should be an `Integer` and `number >= 1` otherwise server will return the `number=1` page by default. For overflow `number` server will return an empty array.
+#### `GET` `/api/Post/page/{skip}`
+
+#### `GET` `/api/Post/page/{skip}/{top}`
+
+`/api/Post/page` endpoint has three options. By default `skip=0` and `top=20`. `skip` means how many post have to skip and `top` means how many post have to take. Client can hit any of this three option to paginate.
 
 
 
 **Required Parameter**
 
-* Number : Integer
+* skip: Integer | *default : 0*
+* top : integer | *default: 20*
 
 
 
@@ -405,6 +416,51 @@ This endpoint allow to paginate through all posts by taking the page number. Thi
     }
   ]
 ```
+
+
+
+
+
+#### `GET /api/Post/blog/{name}`
+
+To provide all post by an author blog name. If any post exists then return an array of posts with 200 status code otherwise 404.
+
+
+
+**Required Parameter**
+
+* Name : string
+
+
+**Response**
+
+* XML Response
+
+```xml
+  <ArrayOfPost xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Post>
+      <Id>afb37453-ef7b-49a4-a770-08d7b9fcc1a2</Id>
+    <Title>Hello World</Title>
+      <Body>First Blog Post</Body>
+    <CreatedOn>2020-02-25T14:12:11.506</CreatedOn>
+      <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
+    </Post>
+  </ArrayOfPost>
+```
+* JSON Response
+
+```json
+  [ 
+    {
+      "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
+      "title": "string",
+      "body": "string",
+      "createdOn": "2020-02-26T11:29:54.129Z",
+      "lastUpdateOn": "0001-01-01T00:00:00"
+    }
+  ]
+```
+
 
 
 

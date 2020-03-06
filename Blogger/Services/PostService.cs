@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Blogger.Data;
+using Blogger.Extensions;
 
 namespace Blogger.Services
 {
@@ -18,6 +19,7 @@ namespace Blogger.Services
 
         public async Task<Post> Create(Post post)
         {
+            post.Id = Guid.Empty;
             post.LastUpdateOn = DateTime.Now;
             return await PostRepo.Add(post);
         }
@@ -40,33 +42,51 @@ namespace Blogger.Services
             return await PostRepo.Delete(post);
         }
 
-        public async Task<List<Post>> GetAll()
+        public async Task<List<Post>> GetAll(string filter)
         {
-           return await PostRepo.GetQueryableHandler()
-                                .AsQueryable()
-                                .Where(post => true)
-                                .ToListAsync();
+            if(!String.IsNullOrEmpty(filter))
+            {
+                return await PostRepo
+                    .GetQueryableHandler()
+                    .Where(post => post.Title.Contains(filter) || 
+                                   post.Body.Contains(filter) || 
+                                   post.Author.BlogName.Contains(filter))
+                    .ToListAsync();
+            }
+            return await PostRepo.GetQueryableHandler()
+                                 .Where(post => true)
+                                 .ToListAsync();
         }
 
-        public async Task<List<Post>> GetPage(int page, int pageSize, bool descOrder)
+        public async Task<List<Post>> GetPage(int skip, int top, bool descOrder)
         {
-            if(page <=0)
+            if(skip <0)
             {
-                page = 1;
+                skip = 0;
+            }
+            if(top < 0)
+            {
+                top = 20;
             }
 
             var resource = PostRepo.GetQueryableHandler();
-            int cursorPoint = (page-1)*pageSize;
             if(descOrder)
             {
                 return await resource.OrderByDescending(post => post.CreatedOn)
-                                     .Skip(cursorPoint)
-                                     .Take(pageSize)
+                                     .Skip(skip)
+                                     .Take(top)
                                      .ToListAsync();
             }
-            return await resource.Skip(cursorPoint)
-                                 .Take(pageSize)
+            return await resource.Skip(skip)
+                                 .Take(top)
                                  .ToListAsync();
+        }
+
+        public async Task<List<Post>> GetPostsByBlog(string name)
+        {
+            name = name.ToLower();
+            var resource = PostRepo.GetQueryableHandler();
+            return await resource.Where(post => post.Author.BlogName == name).ToListAsync();
         }
     }
 }

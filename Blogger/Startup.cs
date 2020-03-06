@@ -72,6 +72,7 @@ namespace Blogger
             }).AddXmlSerializerFormatters();
             services.AddJwtAuthentication();
             services.ConfigureSwaggerPage();
+            services.AddCorsOnPolicy("MyCorsPolicy");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,7 +82,9 @@ namespace Blogger
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
+            app.UseCors("MyCorsPolicy");
+
             app.UseCustomExceptionHandler();
 
             app.UseSwaggerMiddleware();

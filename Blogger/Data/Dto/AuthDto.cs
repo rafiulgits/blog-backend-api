@@ -4,8 +4,8 @@ namespace Blogger.Data.Dto
 {
     public class AuthDto : IDto<Object>
     {
-        public string Email { set; get; }
-        public string Password { set; get; }
+        public string Email { set; get; } = string.Empty;
+        public string Password { set; get; } = string.Empty;
 
         public Object GetPersistentObject()
         {

@@ -1,14 +1,13 @@
 using System;
-using Blogger.Data.Dto;
 
 namespace Blogger.Data.Dto
 {
     public class PostDto : IDto<Post>
     {
-        public Guid Id { set; get; }
-        public string Title {set; get;}
-        public string Body {set; get;}
-        public DateTime CreatedOn {set; get;}
+        public Guid Id { set; get; } = Guid.Empty;
+        public string Title { set; get; } = string.Empty;
+        public string Body { set; get; } = string.Empty;
+        public DateTime CreatedOn { set; get; }
         
         public int AuthorId;
 
