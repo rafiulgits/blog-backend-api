@@ -13,6 +13,6 @@ namespace Blogger.Services
         Task<Post> Update(Post oldPost, Post newPost);
         Task<Post> Delete(Post entity);
         Task<List<Post>> GetAll();
-        Task<List<Post>> GetPage(int page, int pageSize, bool descOrder);
+        Task<List<Post>> GetPage(int skip, int top, bool descOrder);
     }
 }

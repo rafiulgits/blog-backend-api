@@ -18,6 +18,7 @@ namespace Blogger.Services
 
         public async Task<Post> Create(Post post)
         {
+            post.Id = Guid.Empty;
             post.LastUpdateOn = DateTime.Now;
             return await PostRepo.Add(post);
         }
@@ -48,24 +49,27 @@ namespace Blogger.Services
                                 .ToListAsync();
         }
 
-        public async Task<List<Post>> GetPage(int page, int pageSize, bool descOrder)
+        public async Task<List<Post>> GetPage(int skip, int top, bool descOrder)
         {
-            if(page <=0)
+            if(skip <0)
             {
-                page = 1;
+                skip = 0;
+            }
+            if(top < 0)
+            {
+                top = 20;
             }
 
             var resource = PostRepo.GetQueryableHandler();
-            int cursorPoint = (page-1)*pageSize;
             if(descOrder)
             {
                 return await resource.OrderByDescending(post => post.CreatedOn)
-                                     .Skip(cursorPoint)
-                                     .Take(pageSize)
+                                     .Skip(skip)
+                                     .Take(top)
                                      .ToListAsync();
             }
-            return await resource.Skip(cursorPoint)
-                                 .Take(pageSize)
+            return await resource.Skip(skip)
+                                 .Take(top)
                                  .ToListAsync();
         }
     }

@@ -48,8 +48,10 @@ namespace Blogger.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("page/{number}")]
-        public async Task<ActionResult> GetPaginate(int number)
+        [HttpGet("page")]
+        [HttpGet("page/{skip}")]
+        [HttpGet("page/{skip}/{top}")]
+        public async Task<ActionResult> GetPaginate(int skip=0, int top=20)
         {
             var queryOrder = Request.Query["order"].ToString();
             if(!String.IsNullOrEmpty(queryOrder))
@@ -57,11 +59,11 @@ namespace Blogger.Controllers
                 queryOrder = queryOrder.ToLower();
                 if(queryOrder == "desc")
                 {
-                    var resultWithOrder = await postService.GetPage(number, 10, true);
+                    var resultWithOrder = await postService.GetPage(skip, top, true);
                     return Ok(resultWithOrder);
                 }
             }
-            var result = await postService.GetPage(number, 10, false);
+            var result = await postService.GetPage(skip, top, false);
             return Ok(result);
         }
 

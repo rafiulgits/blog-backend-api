@@ -365,15 +365,20 @@ To delete a particular post object. This endpoint take an `Id` as parameter and 
 
 
 
-#### `GET` `/api/Post/page/{number}`
+#### `GET` `/api/Post/page`
 
-This endpoint allow to paginate through all posts by taking the page number. This page number should be an `Integer` and `number >= 1` otherwise server will return the `number=1` page by default. For overflow `number` server will return an empty array.
+#### `GET` `/api/Post/page/{skip}`
+
+#### `GET` `/api/Post/page/{skip}/{top}`
+
+`/api/Post/page` endpoint has three options. By default `skip=0` and `top=20`. `skip` means how many post have to skip and `top` means how many post have to take. Client can hit any of this three option to paginate.
 
 
 
 **Required Parameter**
 
-* Number : Integer
+* skip: Integer | *default : 0*
+* top : integer | *default: 20*
 
 
 
