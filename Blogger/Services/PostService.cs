@@ -28,6 +28,10 @@ namespace Blogger.Services
         public async Task<PostDto> Get(Guid id)
         {
             var result = await PostRepo.Get(id);
+            if(result == null)
+            {
+                return null;
+            }
             return new PostDto(result);
         }
 
