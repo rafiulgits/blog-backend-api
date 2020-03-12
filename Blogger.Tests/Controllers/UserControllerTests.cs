@@ -95,11 +95,6 @@ namespace Blogger.Tests.Controllers
             var actionResult =  controller.Create(userDto).Result as BadRequestObjectResult;
 
             Assert.NotNull(actionResult);
-
-            var errorDto = actionResult.Value as ErrorDto;
-            Assert.NotNull(errorDto);
-            Assert.IsType<List<string>>(errorDto["Email"]);
-            Assert.Equal(errorMessage, errorDto["Email"][0]);
         }
 
         [Fact]
@@ -125,11 +120,6 @@ namespace Blogger.Tests.Controllers
             var actionResult = controller.Create(userDto).Result as BadRequestObjectResult;
 
             Assert.NotNull(actionResult);
-
-            var errorDto = actionResult.Value as ErrorDto;
-            Assert.NotNull(errorDto);
-            Assert.IsType<List<string>>(errorDto["BlogName"]);
-            Assert.Equal(errorMessage, errorDto["BlogName"][0]);
         }
 
         [Fact]
@@ -170,8 +160,8 @@ namespace Blogger.Tests.Controllers
         {
             var mockService = GetService();
             mockService
-                .Setup(service => service.Get(It.IsAny<string>()))
-                .Returns(async (string id) =>
+                .Setup(service => service.Get(It.IsAny<int>()))
+                .Returns(async (int id) =>
                 {
                     User response = null;
                     return await Task.FromResult(response);
@@ -195,8 +185,8 @@ namespace Blogger.Tests.Controllers
         {
             var mockService = GetService();
             mockService
-                .Setup(service => service.Get(It.IsAny<string>()))
-                .Returns(async (string id) =>
+                .Setup(service => service.Get(It.IsAny<int>()))
+                .Returns(async (int id) =>
                 {
                     User response = new User() { Id = 1, Email="rafi@mail.com", FirstName="Rafiul" };
                     return await Task.FromResult(response);

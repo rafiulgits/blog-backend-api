@@ -58,7 +58,7 @@ namespace Blogger
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<BloggerContext>();
+            services.AddScoped<BloggerContext>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 

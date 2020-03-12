@@ -8,8 +8,25 @@ namespace Blogger.Data.Dto
         public string Title { set; get; } = string.Empty;
         public string Body { set; get; } = string.Empty;
         public DateTime CreatedOn { set; get; }
-        
-        public int AuthorId;
+        public int AuthorId { set; get; }
+        public AuthorDto Author { set; get; }
+       
+
+        public PostDto()
+        {
+
+        }
+
+        public PostDto(Post post)
+        {
+            Id = post.Id;
+            Title = post.Title;
+            Body = post.Body;
+            CreatedOn = post.CreatedOn;
+            AuthorId = post.AuthorId;
+            Author = new AuthorDto(post.Author);
+        }
+
 
         public Post GetPersistentObject()
         {

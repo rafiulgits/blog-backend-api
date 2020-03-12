@@ -39,10 +39,9 @@ namespace Blogger.Services
             return Result;
         }
 
-        public async Task<User> Get(string id)
+        public async Task<User> Get(int id)
         {
-            int _id = int.Parse(id);
-            return await UserRepo.Get(_id);
+            return await UserRepo.Get(id);
         }
     }
 }

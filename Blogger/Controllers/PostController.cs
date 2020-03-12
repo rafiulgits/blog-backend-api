@@ -29,7 +29,6 @@ namespace Blogger.Controllers
             {
                 post.AuthorId = HttpContext.GetUserId();
                 var result = await postService.Create(post);
-                result.Author = null;
                 string refUrl = $"{HttpContext.GetCurrentRequestUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
             }
@@ -86,7 +85,7 @@ namespace Blogger.Controllers
                 return BadRequest(error);
             }
             var post = postDto.GetPersistentObject();
-            var oldPost = await postService.Get(post.Id);
+            var oldPost = await postService.GetPostOnly(post.Id);
             if(oldPost == null)
             {
                 return NotFound();
@@ -106,7 +105,7 @@ namespace Blogger.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePost(Guid id)
         {
-            var post = await postService.Get(id);
+            var post = await postService.GetPostOnly(id);
             if(post == null)
             {
                 return NotFound();

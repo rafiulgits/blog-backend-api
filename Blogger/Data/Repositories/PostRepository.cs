@@ -17,13 +17,17 @@ namespace Blogger.Data
         
         public async Task<Post> Get(Guid id)
         {
-            return await Context.FindAsync<Post>(id);
+            return await Context.Posts.Where(post => post.Id == id)
+                                      .Include(post => post.Author)
+                                      .FirstOrDefaultAsync();
         }
 
         public async Task<Post> Add(Post entity)
         {
             var result = await Context.AddAsync<Post>(entity);
             await Context.SaveChangesAsync();
+            var author = Context.Users.Where(user => user.Id == result.Entity.AuthorId).FirstOrDefault();
+            result.Entity.Author = author;
             return result.Entity;
         }
 

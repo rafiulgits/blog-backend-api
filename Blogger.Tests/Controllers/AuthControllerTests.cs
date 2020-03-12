@@ -82,8 +82,6 @@ namespace Blogger.Tests.Controllers
 
             var errorDto = actionResult.Value as ErrorDto;
             Assert.NotNull(errorDto);
-            Assert.IsType<List<string>>(errorDto["Email"]);
-            Assert.Equal("no user found with this email address", errorDto["Email"][0]);
         }
 
         [Fact]
@@ -110,8 +108,6 @@ namespace Blogger.Tests.Controllers
 
             var errorDto = actionResult.Value as ErrorDto;
             Assert.NotNull(errorDto);
-            Assert.IsType<List<string>>(errorDto["Password"]);
-            Assert.Equal("incorrect password", errorDto["Password"][0]);
         }
     }
 }
