@@ -17,7 +17,9 @@ namespace Blogger.Data
         
         public async Task<Post> Get(Guid id)
         {
-            return await Context.FindAsync<Post>(id);
+            return await Context.Posts.Where(post => post.Id == id)
+                                      .Include(post => post.Author)
+                                      .FirstOrDefaultAsync();
         }
 
         public async Task<Post> Add(Post entity)

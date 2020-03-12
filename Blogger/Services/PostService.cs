@@ -33,6 +33,7 @@ namespace Blogger.Services
         {
             olderPost.Title = updatedPost.Title;
             olderPost.Body = updatedPost.Body;
+            olderPost.CreatedOn = updatedPost.CreatedOn;
             olderPost.LastUpdateOn = DateTime.Now;
             return await PostRepo.Update(olderPost);
         }
@@ -48,12 +49,14 @@ namespace Blogger.Services
             {
                 return await PostRepo
                     .GetQueryableHandler()
+                    .Include("Author")
                     .Where(post => post.Title.Contains(filter) || 
                                    post.Body.Contains(filter) || 
                                    post.Author.BlogName.Contains(filter))
                     .ToListAsync();
             }
             return await PostRepo.GetQueryableHandler()
+                                 .Include("Author")
                                  .Where(post => true)
                                  .ToListAsync();
         }
@@ -73,11 +76,13 @@ namespace Blogger.Services
             if(descOrder)
             {
                 return await resource.OrderByDescending(post => post.CreatedOn)
+                                     .Include("Author")
                                      .Skip(skip)
                                      .Take(top)
                                      .ToListAsync();
             }
-            return await resource.Skip(skip)
+            return await resource.Include("Author")
+                                 .Skip(skip)
                                  .Take(top)
                                  .ToListAsync();
         }
@@ -86,7 +91,9 @@ namespace Blogger.Services
         {
             name = name.ToLower();
             var resource = PostRepo.GetQueryableHandler();
-            return await resource.Where(post => post.Author.BlogName == name).ToListAsync();
+            return await resource.Include("Author")
+                                 .Where(post => post.Author.BlogName == name)
+                                 .ToListAsync();
         }
     }
 }
