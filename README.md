@@ -17,11 +17,18 @@ Support `JSON` and `XML` serialization and deserialization.
 This model is used to transfer a `Post` object from client to server and validate the object on required criteria.
 
 * **Id** : UUID4/GUID
-* **Title** : String
-* **Body** : String
+
+* **Title** : String | *min-length: 1, max-length: 250*
+
+* **Body** : String | *min-length: 0*
+
 * **CreatedOn** : Date-Time
 
+* **AuthorId** : Integer
 
+*  **Author** : AuthorDTO
+
+  
 
 ### Error DTO
 
@@ -32,15 +39,16 @@ This model is used to transfer an Error from server to client whenever client re
 
 
 
-### User DTO
+### AuthorDTO
 
 This model is used to transfer the information about  a new user on this system.
 
-* **Email** : String
-* **FirstName** : String
-* **LastName** : String
-* **Password** : String
-* **BlogName** : String
+* **Id** : Integer
+* **Email** : String | *type : Email, unique*
+* **FirstName** : String | *min-length: 1, max-length: 128*
+* **LastName** : String | *min-length: 1, max-length: 128*
+* **Password** : String | *min-length: 8*
+* **BlogName** : String | *min-length: 3, max-length: 30, unique*
 
 
 
@@ -49,7 +57,7 @@ This model is used to transfer the information about  a new user on this system.
 
 This model is used transfer user credentials to server
 
-* **Email** : String | *format : example@mail.com
+* **Email** : String | *format : example@mail.com*
 * **Password** : String 
 
 
@@ -71,7 +79,7 @@ This model is used to transfer user access token from server to client side
 | ------------------------- | ------------------------------------------------------------ |
 | 200 OK                    | Successful `GET` ,`PUT`, `DELETE` request                    |
 | 201 Created               | Success `POST` request                                       |
-| 400 Bad Request           | Validation requirements or formation error                   |
+| 400 Bad Request           | Validation requirements or formation error. Response in **ErrorDto** |
 | 401 Unauthorized          | When anonymous user want to access any authenticated endpoint |
 | 403 Forbidden             | User doesn't have the permission to access that endpoint     |
 | 404 Not Found             | If requested result not found by the system                  |
@@ -142,24 +150,36 @@ This endpoint is for create a new blog post.  Request body or data support `JSON
 
 ```JSON
 {
-  "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
-  "title": "string",
-  "body": "string",
-  "createdOn": "2020-02-26T11:29:54.129Z",
-  "lastUpdateOn": "0001-01-01T00:00:00"
+    "id": "984f9c78-65ea-4415-390f-08d7c676c90b",
+    "title": "string",
+    "body": "string",
+    "createdOn": "2020-03-12T11:07:06.245Z",
+    "authorId": 13,
+    "author": {
+        "id": 13,
+        "name": "Rafiul Islam",
+        "email": "rafi@mail.com",
+        "blogName": "rafiulblog"
+    }
 }
 ```
 
 * XML Response
 
 ```XML
-<Post xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Id>609964d6-3ab3-446f-980e-08d7baaf36fe</Id>
-  <Title>string</Title>
-  <Body>string</Body>
-  <CreatedOn>2020-02-26T11:29:54.129Z</CreatedOn>
-  <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
-</Post>
+<PostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Id>1e214350-9d63-416e-3910-08d7c676c90b</Id>
+    <Title>string</Title>
+    <Body>string</Body>
+    <CreatedOn>2020-03-12T11:07:06.245Z</CreatedOn>
+    <AuthorId>13</AuthorId>
+    <Author>
+        <Id>13</Id>
+        <Name>Rafiul Islam</Name>
+        <Email>rafi@mail.com</Email>
+        <BlogName>rafiulblog</BlogName>
+    </Author>
+</PostDto>
 ```
 
 
@@ -183,26 +203,38 @@ This endpoint is for get all available posts in database. If no post available i
 * XML Response
 
 ```xml
-  <ArrayOfPost xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Post>
-      <Id>afb37453-ef7b-49a4-a770-08d7b9fcc1a2</Id>
-    <Title>Hello World</Title>
-      <Body>First Blog Post</Body>
-    <CreatedOn>2020-02-25T14:12:11.506</CreatedOn>
-      <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
-    </Post>
-  </ArrayOfPost>
+  <ArrayOfPostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <PostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <Id>1e214350-9d63-416e-3910-08d7c676c90b</Id>
+        <Title>string</Title>
+        <Body>string</Body>
+        <CreatedOn>2020-03-12T11:07:06.245Z</CreatedOn>
+        <AuthorId>13</AuthorId>
+        <Author>
+            <Id>13</Id>
+            <Name>Rafiul Islam</Name>
+            <Email>rafi@mail.com</Email>
+            <BlogName>rafiulblog</BlogName>
+        </Author>
+      </PostDto>
+  </ArrayOfPostDto>
 ```
 * JSON Response
 
 ```json
 [ 
     {
-        "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
+        "id": "984f9c78-65ea-4415-390f-08d7c676c90b",
         "title": "string",
         "body": "string",
-        "createdOn": "2020-02-26T11:29:54.129Z",
-        "lastUpdateOn": "0001-01-01T00:00:00"
+        "createdOn": "2020-03-12T11:07:06.245Z",
+        "authorId": 13,
+        "author": {
+            "id": 13,
+            "name": "Rafiul Islam",
+            "email": "rafi@mail.com",
+            "blogName": "rafiulblog"
+        }
     }
 ]
 ```
@@ -263,7 +295,8 @@ To update an existing post.
     "title": "updated Title",
     "body": "updated body",
     "createdOn": "2020-02-27T07:15:27.395Z",
-    "lastUpdateOn": "2020-02-27T07:15:28.395Z"
+    "lastUpdateOn": "2020-02-27T07:15:28.395Z",
+    "authorId": 13
 }
 ```
 
@@ -279,6 +312,7 @@ To update an existing post.
    <Body>updated body</Body>
    <CreatedOn>2020-02-27T08:23:55.004Z</CreatedOn>
    <LastUpdateOn>2020-02-27T08:23:56.004Z</LastUpdateOn>
+   <AuthorId>13</AuthorId>
 </Post>
 ```
 
@@ -305,24 +339,36 @@ To fetch a particular post object. This endpoint take an `Id` as parameter and r
 
 ```json
 {
-  "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
-  "title": "string",
-  "body": "string",
-  "createdOn": "2020-02-26T11:29:54.129Z",
-  "lastUpdateOn": "0001-01-01T00:00:00"
+    "id": "984f9c78-65ea-4415-390f-08d7c676c90b",
+    "title": "string",
+    "body": "string",
+    "createdOn": "2020-03-12T11:07:06.245Z",
+    "authorId": 13,
+    "author": {
+        "id": 13,
+        "name": "Rafiul Islam",
+        "email": "rafi@mail.com",
+        "blogName": "rafiulblog"
+    }
 }
 ```
 
 * XML Response
 
 ```xml
-<Post xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Id>609964d6-3ab3-446f-980e-08d7baaf36fe</Id>
-  <Title>string</Title>
-  <Body>string</Body>
-  <CreatedOn>2020-02-26T11:29:54.129Z</CreatedOn>
-  <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
-</Post>
+<PostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Id>1e214350-9d63-416e-3910-08d7c676c90b</Id>
+    <Title>string</Title>
+    <Body>string</Body>
+    <CreatedOn>2020-03-12T11:07:06.245Z</CreatedOn>
+    <AuthorId>13</AuthorId>
+    <Author>
+        <Id>13</Id>
+        <Name>Rafiul Islam</Name>
+        <Email>rafi@mail.com</Email>
+        <BlogName>rafiulblog</BlogName>
+    </Author>
+</PostDto>
 ```
 
 
@@ -347,23 +393,26 @@ To delete a particular post object. This endpoint take an `Id` as parameter and 
 
 ```json
 {
-  "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
-  "title": "string",
-  "body": "string",
-  "createdOn": "2020-02-26T11:29:54.129Z",
-  "lastUpdateOn": "0001-01-01T00:00:00"
+    "id": "851abf5a-0dfb-4879-afeb-08d7bb54d4da",
+    "title": "updated Title",
+    "body": "updated body",
+    "createdOn": "2020-02-27T07:15:27.395Z",
+    "lastUpdateOn": "2020-02-27T07:15:28.395Z",
+    "authorId": 13
 }
 ```
 
 * XML Response
 
 ```xml
-<Post xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Id>609964d6-3ab3-446f-980e-08d7baaf36fe</Id>
-  <Title>string</Title>
-  <Body>string</Body>
-  <CreatedOn>2020-02-26T11:29:54.129Z</CreatedOn>
-  <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
+<?xml version="1.0" encoding="UTF-8"?>
+<Post>
+   <Id>3fa85f64-5717-4562-b3fc-2c963f66afa6</Id>
+   <Title>updated title</Title>
+   <Body>updated body</Body>
+   <CreatedOn>2020-02-27T08:23:55.004Z</CreatedOn>
+   <LastUpdateOn>2020-02-27T08:23:56.004Z</LastUpdateOn>
+   <AuthorId>13</AuthorId>
 </Post>
 ```
 
@@ -393,28 +442,40 @@ To delete a particular post object. This endpoint take an `Id` as parameter and 
 * XML Response
 
 ```xml
-  <ArrayOfPost xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Post>
-      <Id>afb37453-ef7b-49a4-a770-08d7b9fcc1a2</Id>
-    <Title>Hello World</Title>
-      <Body>First Blog Post</Body>
-    <CreatedOn>2020-02-25T14:12:11.506</CreatedOn>
-      <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
-    </Post>
-  </ArrayOfPost>
+  <ArrayOfPostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <PostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <Id>1e214350-9d63-416e-3910-08d7c676c90b</Id>
+        <Title>string</Title>
+        <Body>string</Body>
+        <CreatedOn>2020-03-12T11:07:06.245Z</CreatedOn>
+        <AuthorId>13</AuthorId>
+        <Author>
+            <Id>13</Id>
+            <Name>Rafiul Islam</Name>
+            <Email>rafi@mail.com</Email>
+            <BlogName>rafiulblog</BlogName>
+        </Author>
+      </PostDto>
+  </ArrayOfPostDto>
 ```
 * JSON Response
 
 ```json
-  [ 
+[ 
     {
-      "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
-      "title": "string",
-      "body": "string",
-      "createdOn": "2020-02-26T11:29:54.129Z",
-      "lastUpdateOn": "0001-01-01T00:00:00"
+        "id": "984f9c78-65ea-4415-390f-08d7c676c90b",
+        "title": "string",
+        "body": "string",
+        "createdOn": "2020-03-12T11:07:06.245Z",
+        "authorId": 13,
+        "author": {
+            "id": 13,
+            "name": "Rafiul Islam",
+            "email": "rafi@mail.com",
+            "blogName": "rafiulblog"
+        }
     }
-  ]
+]
 ```
 
 
@@ -437,28 +498,40 @@ To provide all post by an author blog name. If any post exists then return an ar
 * XML Response
 
 ```xml
-  <ArrayOfPost xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Post>
-      <Id>afb37453-ef7b-49a4-a770-08d7b9fcc1a2</Id>
-    <Title>Hello World</Title>
-      <Body>First Blog Post</Body>
-    <CreatedOn>2020-02-25T14:12:11.506</CreatedOn>
-      <LastUpdateOn>0001-01-01T00:00:00</LastUpdateOn>
-    </Post>
-  </ArrayOfPost>
+  <ArrayOfPostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <PostDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <Id>1e214350-9d63-416e-3910-08d7c676c90b</Id>
+        <Title>string</Title>
+        <Body>string</Body>
+        <CreatedOn>2020-03-12T11:07:06.245Z</CreatedOn>
+        <AuthorId>13</AuthorId>
+        <Author>
+            <Id>13</Id>
+            <Name>Rafiul Islam</Name>
+            <Email>rafi@mail.com</Email>
+            <BlogName>rafiulblog</BlogName>
+        </Author>
+      </PostDto>
+  </ArrayOfPostDto>
 ```
 * JSON Response
 
 ```json
-  [ 
+[ 
     {
-      "id": "609964d6-3ab3-446f-980e-08d7baaf36fe",
-      "title": "string",
-      "body": "string",
-      "createdOn": "2020-02-26T11:29:54.129Z",
-      "lastUpdateOn": "0001-01-01T00:00:00"
+        "id": "984f9c78-65ea-4415-390f-08d7c676c90b",
+        "title": "string",
+        "body": "string",
+        "createdOn": "2020-03-12T11:07:06.245Z",
+        "authorId": 13,
+        "author": {
+            "id": 13,
+            "name": "Rafiul Islam",
+            "email": "rafi@mail.com",
+            "blogName": "rafiulblog"
+        }
     }
-  ]
+]
 ```
 
 
@@ -548,11 +621,10 @@ To fetch user profile
 
 ```json
 {
-  "id": 13,
-  "firstName": "Rafiul",
-  "lastName": "Islam",
-  "email": "rafi@mail.com",
-  "blogName": "rafiulblog"
+    "id": 13,
+    "name": "Rafiul Islam",
+    "email": "rafi@mail.com",
+    "blogName": "rafiulblog"
 }
 ```
 
@@ -561,14 +633,12 @@ To fetch user profile
 * XML
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<User xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   <Id>13</Id>
-   <FirstName>Rafiul</FirstName>
-   <LastName>Islam</LastName>
-   <Email>rafi@mail.com</Email>
-   <BlogName>rafiulblog</BlogName>
-</User>
+<AuthorDto xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Id>13</Id>
+    <Name>Rafiul Islam</Name>
+    <Email>rafi@mail.com</Email>
+    <BlogName>rafiulblog</BlogName>
+</AuthorDto>
 ```
 
 

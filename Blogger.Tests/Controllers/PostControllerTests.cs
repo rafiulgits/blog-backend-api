@@ -124,8 +124,14 @@ namespace Blogger.Tests.Controllers
                 .Setup(service => service.Create(It.IsAny<Post>()))
                 .Returns(async (Post post) =>
                 {
-                    post.Id = Guid.NewGuid();
-                    return await Task.FromResult(post);
+                    var dto = new PostDto();
+                    dto.Id = Guid.NewGuid();
+                    dto.Author = new AuthorDto();
+                    dto.AuthorId = 1;
+                    dto.CreatedOn = post.CreatedOn;
+                    dto.Title = post.Title;
+                    dto.Body = post.Body;
+                    return await Task.FromResult(dto);
 
                 });
             var controller = new PostController(mockService.Object);
@@ -145,11 +151,10 @@ namespace Blogger.Tests.Controllers
             Assert.NotNull(actionResult);
             Assert.IsType<string>(actionResult.Location);
 
-            var post = actionResult.Value as Post;
+            var post = actionResult.Value as PostDto;
             Assert.NotNull(post);
             Assert.Equal(1, post.AuthorId);
             Assert.IsType<Guid>(post.Id);
-            Assert.IsType<DateTime>(post.LastUpdateOn);
             Assert.Equal(postDto.Title, post.Title);
             Assert.Equal(postDto.Body, post.Body);
             Assert.Equal(postDto.CreatedOn, post.CreatedOn);

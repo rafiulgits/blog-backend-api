@@ -29,7 +29,6 @@ namespace Blogger.Controllers
             {
                 post.AuthorId = HttpContext.GetUserId();
                 var result = await postService.Create(post);
-                result.Author = null;
                 string refUrl = $"{HttpContext.GetCurrentRequestUrl()}/{result.Id.ToString()}";
                 return Created(refUrl, result);
             }

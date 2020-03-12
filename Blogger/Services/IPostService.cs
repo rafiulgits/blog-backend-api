@@ -11,7 +11,7 @@ namespace Blogger.Services
     {
         Task<PostDto> Get(Guid id);
         Task<Post> GetPostOnly(Guid id);
-        Task<Post> Create(Post post);
+        Task<PostDto> Create(Post post);
         Task<Post> Update(Post oldPost, Post newPost);
         Task<Post> Delete(Post entity);
         Task<List<PostDto>> GetAll(string filter);

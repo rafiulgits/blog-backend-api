@@ -18,11 +18,12 @@ namespace Blogger.Services
             PostRepo = postRepository;
         }
 
-        public async Task<Post> Create(Post post)
+        public async Task<PostDto> Create(Post post)
         {
             post.Id = Guid.Empty;
             post.LastUpdateOn = DateTime.Now;
-            return await PostRepo.Add(post);
+            var result = await PostRepo.Add(post);
+            return new PostDto(result);
         }
 
         public async Task<PostDto> Get(Guid id)

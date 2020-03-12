@@ -26,6 +26,8 @@ namespace Blogger.Data
         {
             var result = await Context.AddAsync<Post>(entity);
             await Context.SaveChangesAsync();
+            var author = Context.Users.Where(user => user.Id == result.Entity.AuthorId).FirstOrDefault();
+            result.Entity.Author = author;
             return result.Entity;
         }
 
