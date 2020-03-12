@@ -7,6 +7,6 @@ namespace Blogger.Services
     public interface IUserService
     {
         Task<DataDependentResult<User>> Create(User user);
-        Task<User> Get(string id);
+        Task<User> Get(int id);
     }
 }

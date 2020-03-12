@@ -41,12 +41,11 @@ namespace Blogger.Controllers
         [HttpGet]
         public async Task<ActionResult> Profile()
         {
-            string id = HttpContext.User.Identity.Name;
+            int id = HttpContext.GetUserId();
             var result = await userService.Get(id);
             if (result != null)
             {
-                result.Password = null;
-                return Ok(result);
+                return Ok(new AuthorDto(result));
             }
             return NotFound();
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Blogger.Data;
 using Blogger.Extensions;
+using Blogger.Data.Dto;
 
 namespace Blogger.Services
 {
@@ -24,7 +25,13 @@ namespace Blogger.Services
             return await PostRepo.Add(post);
         }
 
-        public async Task<Post> Get(Guid id)
+        public async Task<PostDto> Get(Guid id)
+        {
+            var result = await PostRepo.Get(id);
+            return new PostDto(result);
+        }
+
+        public async Task<Post> GetPostOnly(Guid id)
         {
             return await PostRepo.Get(id);
         }
@@ -43,7 +50,7 @@ namespace Blogger.Services
             return await PostRepo.Delete(post);
         }
 
-        public async Task<List<Post>> GetAll(string filter)
+        public async Task<List<PostDto>> GetAll(string filter)
         {
             if(!String.IsNullOrEmpty(filter))
             {
@@ -53,15 +60,17 @@ namespace Blogger.Services
                     .Where(post => post.Title.Contains(filter) || 
                                    post.Body.Contains(filter) || 
                                    post.Author.BlogName.Contains(filter))
+                    .Select(post => new PostDto(post))
                     .ToListAsync();
             }
             return await PostRepo.GetQueryableHandler()
                                  .Include("Author")
                                  .Where(post => true)
+                                 .Select(post => new PostDto(post))
                                  .ToListAsync();
         }
 
-        public async Task<List<Post>> GetPage(int skip, int top, bool descOrder)
+        public async Task<List<PostDto>> GetPage(int skip, int top, bool descOrder)
         {
             if(skip <0)
             {
@@ -79,20 +88,23 @@ namespace Blogger.Services
                                      .Include("Author")
                                      .Skip(skip)
                                      .Take(top)
+                                     .Select(post => new PostDto(post))
                                      .ToListAsync();
             }
             return await resource.Include("Author")
                                  .Skip(skip)
                                  .Take(top)
+                                 .Select(post => new PostDto(post))
                                  .ToListAsync();
         }
 
-        public async Task<List<Post>> GetPostsByBlog(string name)
+        public async Task<List<PostDto>> GetPostsByBlog(string name)
         {
             name = name.ToLower();
             var resource = PostRepo.GetQueryableHandler();
             return await resource.Include("Author")
                                  .Where(post => post.Author.BlogName == name)
+                                 .Select(post => new PostDto(post))
                                  .ToListAsync();
         }
     }
